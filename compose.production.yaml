@@ -1,0 +1,19 @@
+services:
+    webapi:
+        build:
+            context: .
+            dockerfile: ./Dockerfile.webapi
+            target: develop
+    database:
+        build:
+            context: .
+            dockerfile: ./Dockerfile.postgresql
+        ports:
+            - "5432:5432"
+        volumes:
+            - database-volume:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_PASSWORD=postgres
+        restart: always
+volumes:
+    database-volume:

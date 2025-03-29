@@ -1,0 +1,10 @@
+FROM public.ecr.aws/docker/library/postgres:17
+
+RUN apt-get update && \
+    apt-get install -y git make gcc postgresql-server-dev-17
+RUN cd /tmp && \
+    git clone --branch v0.5.1 https://github.com/pgvector/pgvector.git && \
+    cd pgvector && \
+    make && \
+    make install && \
+    cd ../ && rm -rf pgvector
