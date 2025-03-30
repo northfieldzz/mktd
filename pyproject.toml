@@ -1,11 +1,5 @@
 [project]
 name = "rasa-sample"
-version = "0.1.0"
-description = ""
-authors = [
-    {name = "northfieldzz"}
-]
-license = {text = "MIT"}
 requires-python = ">=3.12,<4.0"
 
 [tool.poetry]
@@ -15,6 +9,8 @@ package-mode=false
 
 [tool.poetry.group.webapi.dependencies]
 fastapi = "^0.115.12"
+database = {path = "libraries/database", develop = true}
+gmk-ai = {path = "libraries/gmk_ai", develop = true}
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
