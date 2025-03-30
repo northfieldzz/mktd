@@ -43,7 +43,10 @@ services:
             dockerfile: ./applications/webapi/Dockerfile
             target: develop
         volumes:
-            - ./applications/webapi/:/home/$USERNAME/app
+            - .:/home/user/app/
+        stdin_open: true
+        tty: true
+        command: bash
 volumes:
     buckets-volume:
     postgresql-volume:

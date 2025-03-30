@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/python:3.13 as builder
+FROM public.ecr.aws/docker/library/python:3.13-bullseye as builder
 ARG USERNAME=user
 ARG GROUPNAME=user
 ARG UID=1000
@@ -17,10 +17,6 @@ RUN poetry config virtualenvs.create false
 
 FROM builder as develop
 
-ENTRYPOINT bash
-
 FROM builder as production
 COPY pyproject.toml poetry.lock README.md ./
-RUN poetry install
-
-ENTRYPOINT uvicorn server:app --host $HOST --port $PORT
+RUN poetry install --group webapi

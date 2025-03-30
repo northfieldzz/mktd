@@ -1,19 +1,46 @@
 services:
+    postgresql:
+        build:
+            context: ./applications/database
+            dockerfile: ./Dockerfile
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgresql-volume:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_PASSWORD=postgres
+    buckets:
+        image: quay.io/minio/minio:latest
+        ports:
+            - 9000:9000
+            - 9001:9001
+        volumes:
+            - buckets-volume:/data" # 任意の設定
+        environment:
+            MINIO_ROOT_USER: "minio_root"
+            MINIO_ROOT_PASSWORD: "minio_password"
+        command: server /data --console-address ":9001"
+    dynamodb:
+        build:
+            context: ./applications/dynamodb
+            dockerfile: Dockerfile
+        command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+        ports:
+         - "8000:8000"
+        volumes:
+         - dynamodb-volume:/home/dynamodblocal/data
+    dynamodb-admin:
+        image: aaronshaf/dynamodb-admin:latest
+        environment:
+            DYNAMO_ENDPOINT: http://dynamodb:8000
+        ports:
+            - 8001:8001
+        depends_on:
+            - dynamodb
     webapi:
         build:
             context: .
             dockerfile: ./Dockerfile.webapi
-            target: develop
-    database:
-        build:
-            context: .
-            dockerfile: ./Dockerfile.postgresql
-        ports:
-            - "5432:5432"
-        volumes:
-            - database-volume:/var/lib/postgresql/data
-        environment:
-            - POSTGRES_PASSWORD=postgres
-        restart: always
+        command: uvicorn server:app --host $HOST --port $PORT
 volumes:
     database-volume:
